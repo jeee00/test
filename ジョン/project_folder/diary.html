@@ -193,7 +193,7 @@ function saveToLocalStorage() {
         const p = card.querySelector('p');
         const date = p.querySelector('.date').textContent;
         const time = p.querySelector('.time').textContent;
-        const text = p.textContent.split('：')[1];
+        const text = p.textContent.split('：')[1].trim();
         data.push({date, time, text});
     });
     localStorage.setItem('diaryCards', JSON.stringify(data));
@@ -205,7 +205,7 @@ function loadFromLocalStorage() {
         const card = document.createElement('div');
         card.className = 'diary-card';
         card.innerHTML = `
-            <p><span class="date">${item.date}</span><span class="time">${item.time}</span>：${item.text}</p>
+            <p><span class="date">${item.date}</span>：${item.text} <span class="time">${item.time}</span></p>
             <div class="card-actions">
                 <button class="edit-btn">✏️</button>
                 <button class="delete-btn">🗑️</button>
@@ -230,7 +230,7 @@ function addCardActions(card) {
 
     editBtn.addEventListener('click', () => {
         if(editBtn.textContent === '✏️') {
-            const currentText = p.textContent.split('：')[1];
+            const currentText = p.textContent.split('：')[1].trim();
             const textarea = document.createElement('textarea');
             textarea.value = currentText;
             textarea.style.width = '100%';
@@ -242,7 +242,7 @@ function addCardActions(card) {
         } else {
             const textarea = card.querySelector('textarea');
             if(textarea) {
-                p.innerHTML = `${dateSpan.outerHTML}${timeSpan.outerHTML}：${textarea.value}`;
+                p.innerHTML = `${dateSpan.outerHTML}：${textarea.value} <span class="time">${timeSpan.textContent}</span>`;
                 card.replaceChild(p, textarea);
                 editBtn.textContent = '✏️';
                 saveToLocalStorage();
@@ -259,12 +259,12 @@ addBtn.addEventListener('click', () => {
     const today = new Date();
     const weekDays = ["日曜日","月曜日","火曜日","水曜日","木曜日","金曜日","土曜日"];
     const dateStr = `${today.getMonth()+1}/${today.getDate()}(${weekDays[today.getDay()]})`;
-    const timeStr = `${today.getHours().toString().padStart(2,'0')}:${today.getMinutes().toString().padStart(2,'0')}`;
+    const timeStr = `${today.getHours()}時${today.getMinutes()}分${today.getSeconds()}秒`;
 
     const card = document.createElement('div');
     card.className = 'diary-card';
     card.innerHTML = `
-        <p><span class="date">${dateStr}</span><span class="time">${timeStr}</span>：${text}</p>
+        <p><span class="date">${dateStr}</span>：${text} <span class="time">${timeStr}</span></p>
         <div class="card-actions">
             <button class="edit-btn">✏️</button>
             <button class="delete-btn">🗑️</button>
