@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>日記</title>
+    <title>Diary</title>
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -86,12 +86,6 @@
             margin-right: 5px;
         }
 
-        .diary-card .time {
-            font-size: 0.8em;
-            color: #999;
-            margin-left: 8px;
-        }
-
         .card-actions {
             margin-top: 10px;
             text-align: right;
@@ -173,7 +167,7 @@
 </header>
 
 <main>
-    <h1>日記</h1>
+    <h1>Diary</h1>
 
     <div id="new-entry">
         <textarea id="entry-text" placeholder="今日の記録を書いてみよう…"></textarea>
@@ -192,9 +186,8 @@ function saveToLocalStorage() {
     cards.forEach(card => {
         const p = card.querySelector('p');
         const date = p.querySelector('.date').textContent;
-        const time = p.querySelector('.time').textContent;
-        const text = p.textContent.split('：')[1].trim();
-        data.push({date, time, text});
+        const text = p.textContent.split('：')[1];
+        data.push({date, text});
     });
     localStorage.setItem('diaryCards', JSON.stringify(data));
 }
@@ -205,7 +198,7 @@ function loadFromLocalStorage() {
         const card = document.createElement('div');
         card.className = 'diary-card';
         card.innerHTML = `
-            <p><span class="date">${item.date}</span>：${item.text} <span class="time">${item.time}</span></p>
+            <p><span class="date">${item.date}</span>：${item.text}</p>
             <div class="card-actions">
                 <button class="edit-btn">✏️</button>
                 <button class="delete-btn">🗑️</button>
@@ -221,7 +214,6 @@ function addCardActions(card) {
     const deleteBtn = card.querySelector('.delete-btn');
     const p = card.querySelector('p');
     const dateSpan = p.querySelector('.date');
-    const timeSpan = p.querySelector('.time');
 
     deleteBtn.addEventListener('click', () => {
         card.remove();
@@ -230,7 +222,7 @@ function addCardActions(card) {
 
     editBtn.addEventListener('click', () => {
         if(editBtn.textContent === '✏️') {
-            const currentText = p.textContent.split('：')[1].trim();
+            const currentText = p.textContent.split('：')[1];
             const textarea = document.createElement('textarea');
             textarea.value = currentText;
             textarea.style.width = '100%';
@@ -242,7 +234,7 @@ function addCardActions(card) {
         } else {
             const textarea = card.querySelector('textarea');
             if(textarea) {
-                p.innerHTML = `${dateSpan.outerHTML}：${textarea.value} <span class="time">${timeSpan.textContent}</span>`;
+                p.innerHTML = `${dateSpan.outerHTML}：${textarea.value}`;
                 card.replaceChild(p, textarea);
                 editBtn.textContent = '✏️';
                 saveToLocalStorage();
@@ -259,12 +251,11 @@ addBtn.addEventListener('click', () => {
     const today = new Date();
     const weekDays = ["日曜日","月曜日","火曜日","水曜日","木曜日","金曜日","土曜日"];
     const dateStr = `${today.getMonth()+1}/${today.getDate()}(${weekDays[today.getDay()]})`;
-    const timeStr = `${today.getHours()}時${today.getMinutes()}分${today.getSeconds()}秒`;
 
     const card = document.createElement('div');
     card.className = 'diary-card';
     card.innerHTML = `
-        <p><span class="date">${dateStr}</span>：${text} <span class="time">${timeStr}</span></p>
+        <p><span class="date">${dateStr}</span>：${text}</p>
         <div class="card-actions">
             <button class="edit-btn">✏️</button>
             <button class="delete-btn">🗑️</button>
